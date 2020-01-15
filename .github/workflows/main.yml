@@ -1,0 +1,32 @@
+name: Application Test and Release Workflow
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  
+
+  release:
+    env:
+      HEROKU_API_KEY: "f914a54d-a1d3-4322-9ba3-042e4d6a88d1"
+      HEROKU_EMAIL: "nagbhushanpatil111@gmail.com"
+    runs-on: ubuntu-latest
+
+ 
+
+    steps:
+      - uses: actions/checkout@v1.0.0
+      - run: |+
+          cat >~/.netrc <<EOF
+          machine api.heroku.com
+              login nagbhushanpatil111@gmail.com
+              password f914a54d-a1d3-4322-9ba3-042e4d6a88d1
+          machine git.heroku.com
+              login nagbhushanpatil111@gmail.com
+              password f914a54d-a1d3-4322-9ba3-042e4d6a88d1
+          EOF
+      - run: heroku git:remote -a mycooolapp
+      - run: git push heroku HEAD:refs/heads/master
+      - run: heroku run "POOL_SIZE=2 mix ecto.migrate"
